@@ -272,18 +272,37 @@ video { display: block; max-width: 100%; }
   border-radius: 10px;
   position: relative;
 }
-#hero .scroll-hint .mouse::after {
-  content: '';
+#hero .sound-btn {
   position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  height: 6px;
-  background: rgba(255,255,255,0.6);
-  border-radius: 2px;
-  animation: float 1.8s ease-in-out infinite;
+  bottom: 80px;
+  right: 20px;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
+#hero .sound-btn:active {
+  transform: scale(0.9);
+  background: rgba(255,255,255,0.25);
+}
+#hero .sound-btn svg {
+  width: 20px;
+  height: 20px;
+  fill: rgba(255,255,255,0.8);
+}
+#hero .sound-btn.muted svg .sound-wave { display: none; }
+#hero .sound-btn.muted svg .mute-x { display: block; }
+#hero .sound-btn:not(.muted) svg .mute-x { display: none; }
+#hero .sound-btn:not(.muted) svg .sound-wave { display: block; }
 
 /* ===== 2. Invitation Page ===== */
 #invitation {
@@ -1108,7 +1127,7 @@ video { display: block; max-width: 100%; }
 <!-- ===== 1. Hero Section (Video Cover) ===== -->
 <section id="hero" class="section">
   <video autoplay muted loop playsinline webkit-playsinline x5-playsinline id="heroVideo">
-    <source src="assets/hero-video.mp4" type="video/mp4">
+    <source src="hero-video.mp4" type="video/mp4">
   </video>
   <div class="hero-overlay">
     <div class="hero-top animate-fade">
@@ -1127,6 +1146,12 @@ video { display: block; max-width: 100%; }
   <div class="scroll-hint">
     <div class="mouse"></div>
     <span>向下滑动</span>
+  </div>
+  <div class="sound-btn muted" id="soundBtn" title="开启/关闭声音">
+    <svg viewBox="0 0 24 24">
+      <path class="sound-wave" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+      <g class="mute-x"><path d="M3 9v6h4l5 5V4L7 9H3z"/><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/><line x1="23" y1="9" x2="17" y2="15" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/><line x1="17" y1="9" x2="23" y2="15" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round"/></g>
+    </svg>
   </div>
 </section>
 
@@ -1181,7 +1206,7 @@ video { display: block; max-width: 100%; }
       <p style="margin-top: 16px; font-style: italic; color: var(--gold);">— 遇见你，是我最美丽的意外</p>
     </div>
     <div class="photo-frame animate-right">
-      <img src="assets/photo1.jpg" alt="初次相遇" class="lightbox-trigger">
+      <img src="photo1.jpg" alt="初次相遇" class="lightbox-trigger">
     </div>
   </div>
 </section>
@@ -1189,7 +1214,7 @@ video { display: block; max-width: 100%; }
 <!-- ===== 4. Photo 2 - Full Bleed Quote ===== -->
 <section id="photo2" class="section">
   <div class="photo-full">
-    <img src="assets/photo2.jpg" alt="美好时光">
+    <img src="photo2.jpg" alt="美好时光">
     <div class="photo-overlay animate">
       <div class="quote-mark">&ldquo;</div>
       <p class="quote-text">
@@ -1216,7 +1241,7 @@ video { display: block; max-width: 100%; }
       <div class="frame-corner fc-tr"></div>
       <div class="frame-corner fc-bl"></div>
       <div class="frame-corner fc-br"></div>
-      <img src="assets/photo3.jpg" alt="我们的故事" class="lightbox-trigger">
+      <img src="photo3.jpg" alt="我们的故事" class="lightbox-trigger">
     </div>
     <div class="photo3-stories">
       <div class="story-item animate-delay-1">
@@ -1280,7 +1305,7 @@ video { display: block; max-width: 100%; }
     <p class="photo4-sub">Our Vows</p>
     <h3 class="photo4-title">爱的誓言</h3>
     <div class="photo-circle">
-      <img src="assets/photo4.jpg" alt="爱的誓言" class="lightbox-trigger">
+      <img src="photo4.jpg" alt="爱的誓言" class="lightbox-trigger">
     </div>
     <div class="vows">
       <div class="vow-item animate-delay-1">
@@ -1474,18 +1499,21 @@ updateCountdown();
 
 // ===== Video Sound Toggle =====
 const heroVideo = document.getElementById('heroVideo');
+const soundBtn = document.getElementById('soundBtn');
 heroVideo.muted = true;
 heroVideo.play().catch(() => {});
 
-function unmuteVideo() {
-  heroVideo.muted = false;
-  heroVideo.volume = 0.6;
-  document.removeEventListener('click', unmuteVideo);
-  document.removeEventListener('touchstart', unmuteVideo);
-  document.removeEventListener('scroll', unmuteVideo);
-}
-document.addEventListener('click', unmuteVideo);
-document.addEventListener('touchstart', unmuteVideo);
+soundBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (heroVideo.muted) {
+    heroVideo.muted = false;
+    heroVideo.volume = 0.6;
+    soundBtn.classList.remove('muted');
+  } else {
+    heroVideo.muted = true;
+    soundBtn.classList.add('muted');
+  }
+});
 
 // ===== Lightbox =====
 const lightbox = document.getElementById('lightbox');
